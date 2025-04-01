@@ -22,20 +22,19 @@ Este **Projeto** foi criado para um mini curso de CI/CD com Robot Framework usan
 
 ## 🔍 Fontes
 
-- [William Alves da Silva](https://www.youtube.com/@qa.coders) - Qualidade de Software e Automação
-- [Pradap Pandiyan](https://talkingabouttesting.com/) - YML GitActions
+https://github.com/clestonv/robot-dojo - Qualidade de Software e Automação Dojo ministrado por Cleberson do QA.Coders
 
 
 ## 🎮 Como usar
 ```
 1. Clonando o repositório 
-#$ git clone https://github.com/clestonv/robot_api_servrest.git
+#$ git clone https://github.com/ro85pereira/TesteDojoRobot.git
 
 2. Acessando o diretório do projeto 
-$ cd robot_api_servrest
+$ cd rTesteDojoRobot
 
 3. Executando os testes
-$ robot -d /result/ tests/
+$ robot -d log .
 
 ```
 
