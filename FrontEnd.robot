@@ -2,7 +2,7 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${baseUrl}      https://automacao.qacoders-academy.com.br/home
+${baseUrl}      https://qualitys-hunters-front.qacoders.dev.br/login
 ${mail}         sysadmin@qacoders.com
 ${password}     1234@Test   
 
@@ -50,8 +50,8 @@ Abrir site
     Sleep  2s
 
 Realizar login
-    Wait Until Element Is Visible  id=email
-    Input Text  id=email  ${mail}
+    #Wait Until Element Is Visible  id=email
+    Input Text  xpath=(//input[contains(@class,'MuiInputBase-input MuiOutlinedInput-input')])[1]     ${mail}
     Input Text  id=password  ${password}
     Click Element  xpath=//button[normalize-space(text())='Entrar']
     Sleep  1s
