@@ -1,137 +1,70 @@
-name: Testes de API e Web com Robot Framework
+name: Robot Framework Tests
 
-on: push 
+on: [push, workflow_dispatch]
 
 jobs:
-  test_api:
-    name: API Tests
+  test:
+    name: API Tests Robot Dojo
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Clonar arquivos do repositorio
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          echo Instalação das depedências do Projeto
-          pip install robotframework
-          pip install robotframework-requests
+    - name: Instalação das Dependencias
+      run: |
+        pip install robotframework
+        pip install robotframework-requests
+        pip install --upgrade robotframework-seleniumlibrary
+        pip install Faker
 
-      - name: Verify Test Directory
-        run: |
-          if [ ! -d "tests/api" ]; then
-            echo "Test directory does not exist!"
-            exit 1
-          fi
-
-      - name: Run Robot Framework tests
-        run: |
-          echo Executando os testes de API do Robot
-          robot --name "FrontEnd" --outputdir results/ tests/api/ 
+    - name: Executando os testes de API do Robot
+      run: |
+        robot --outputdir results/ .
       
-      - name: Test Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: robot-framework-report-api
-          path: results/
-  
-  test_web:
-    name: Web Tests
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          echo Instalação das depedências do Projeto
-          pip install robotframework-seleniumlibrary
-
-      - name: Run Robot Framework tests
-        run: |
-          echo Executando os testes de API do Robot
-          robot --name "API and Web Tests" --outputdir results/ tests/web/
-      
-      - name: Test Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: robot-framework-report-web
-          path: results/
-
-  merge:
-    name: Merge Reports
-    runs-on: ubuntu-latest
-    needs: 
-      - test_api
-      - test_web
-
-    steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          echo Instalação das depedências do Projeto
-          pip install robotframework
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with: 
-          path: results/
-
-      - name: Merge Reports
-        run: |
-          rebot --merge results/robot-framework-report-api/output.xml results/robot-framework-report-web/output.xml
-          ls -a
-
-      - name: Upload Merge Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: robot-framework-report
-          path: ./*.html
+    - name: Test Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: robot-framework-report
+        path: results
 
   deploy:
     name: Deploy GitHub Pages 🌐
     runs-on: ubuntu-24.04
+    if: always()
     needs: 
-      - merge
+      - test
+
     permissions:
       contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: https://github.com/ro85pereira/TesteDojoRobo/report.html
+      url: https://clestonv.github.io/dojo-robot-2/report.html
+
     steps:
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v4
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with: 
           name: robot-framework-report
+          path: results/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
+          path: results/
 
       - name: Deploy to Github Pages
         id: deployment
         uses: actions/deploy-pages@v4
+    
